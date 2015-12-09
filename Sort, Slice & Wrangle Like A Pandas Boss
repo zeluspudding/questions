@@ -1,0 +1,379 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 68,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import datetime as dt\n",
+    "from datetime import datetime as dt"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Say one has a lookup table summarizing the busy lives of a few people on this planet..."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 69,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "t=pd.Timestamp\n",
+    "lu = pd.DataFrame({ 'name' : ['Bill','Elon','Larry','Jeff','Marissa'],\n",
+    "                    'feels' : ['charitable','Alcoa envy','Elon envy','like the number 7','sassy'],\n",
+    "                    'last ate' : [t('20151209'),t('20151201'),t('20151208'),t('20151208'),t('20151209')],\n",
+    "                    'boxers' : [True,True,True,False,True]})"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Say one also knows where these people live and when they did certain things..."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 70,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "af = pd.DataFrame({ 'name' : ['Bill','Elon','Larry','Elon','Jeff','Larry','Larry'],\n",
+    "                    'address' : ['in my computer','moon','internet','mars','cardboard box','autonomous car','every where'],\n",
+    "                    'sq_ft' : [2,2135,69,84535, 1.32, 54,168],\n",
+    "                    'forks' : [7,1,2,1,0,np.nan,1]})\n",
+    "\n",
+    "rand_dates=[t('20141202'),t('20130804'),t('20120508'),t('20150411'),\n",
+    "            t('20141209'),t('20091023'),t('20130921'),t('20110102'),\n",
+    "            t('20130728'),t('20141119'),t('20151024'),t('20130824')]\n",
+    "                                        \n",
+    "df = pd.DataFrame({ 'name' : ['Elon','Bill','Larry','Elon','Jeff','Larry','Larry','Bill','Larry','Elon','Marissa','Jeff'],\n",
+    "                    'activity' : ['slept','tripped','spoke','swam','spooked','liked','whistled','up dog','smiled','donated','grant men paternity leave','fondled'],\n",
+    "                    'date' : rand_dates})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>boxers</th>\n",
+       "      <th>feels</th>\n",
+       "      <th>last ate</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>True</td>\n",
+       "      <td>charitable</td>\n",
+       "      <td>2015-12-09</td>\n",
+       "      <td>Bill</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>True</td>\n",
+       "      <td>Alcoa envy</td>\n",
+       "      <td>2015-12-01</td>\n",
+       "      <td>Elon</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>True</td>\n",
+       "      <td>Elon envy</td>\n",
+       "      <td>2015-12-08</td>\n",
+       "      <td>Larry</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>False</td>\n",
+       "      <td>like the number 7</td>\n",
+       "      <td>2015-12-08</td>\n",
+       "      <td>Jeff</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>True</td>\n",
+       "      <td>sassy</td>\n",
+       "      <td>2015-12-09</td>\n",
+       "      <td>Marissa</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "  boxers              feels   last ate     name\n",
+       "0   True         charitable 2015-12-09     Bill\n",
+       "1   True         Alcoa envy 2015-12-01     Elon\n",
+       "2   True          Elon envy 2015-12-08    Larry\n",
+       "3  False  like the number 7 2015-12-08     Jeff\n",
+       "4   True              sassy 2015-12-09  Marissa"
+      ]
+     },
+     "execution_count": 71,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "lu"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "af"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "df"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## One could rank these people according to addresses they live at as follows:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 74,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Larry    3\n",
+       "Elon     2\n",
+       "Jeff     1\n",
+       "Bill     1\n",
+       "Name: name, dtype: int64"
+      ]
+     },
+     "execution_count": 74,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#af.groupby(['name','address']).size()\n",
+    "af.name.value_counts()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Need 1: Using the ranking above, how would one create a new \"ranked\" dataframe composed of information from lookup table lu? aka How to make Exhibit A?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 75,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Exhibit A\n",
+    "#  boxers              feels   last ate     name  addresses\n",
+    "#0   True          Elon envy 2015-12-08    Larry          3\n",
+    "#1   True         Alcoa envy 2015-12-01     Elon          2\n",
+    "#2  False  like the number 7 2015-12-08     Jeff          1\n",
+    "#3   True         charitable 2015-12-09     Bill          1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": false
+   },
+   "source": [
+    "## Need 2: Observe the output of the groupby operation that follows. How can one determine the time delta between the oldest and newest dates to rank members of lu according to such time deltas? aka How to get from the groupby to Exhibit D?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "name     date      \n",
+       "Bill     2011-01-02    1\n",
+       "         2013-08-04    1\n",
+       "Elon     2014-11-19    1\n",
+       "         2014-12-02    1\n",
+       "         2015-04-11    1\n",
+       "Jeff     2013-08-24    1\n",
+       "         2014-12-09    1\n",
+       "Larry    2009-10-23    1\n",
+       "         2012-05-08    1\n",
+       "         2013-07-28    1\n",
+       "         2013-09-21    1\n",
+       "Marissa  2015-10-24    1\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 76,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.groupby(['name','date']).size()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Exhibit B - Calculate time deltas\n",
+    "# name     time_delta\n",
+    "# Bill     Timedelta('945 days 00:00:00')\n",
+    "# Elon     Timedelta('143 days 00:00:00')\n",
+    "# Jeff     Timedelta('472 days 00:00:00')\n",
+    "# Larry    Timedelta('1429 days 00:00:00')\n",
+    "# Marissa  Timedelta('0 days 00:00:00')\n",
+    "\n",
+    "# Exhibit C - Rank time deltas (this is easy)\n",
+    "# name     time_delta\n",
+    "# Larry    Timedelta('1429 days 00:00:00')\n",
+    "# Bill     Timedelta('945 days 00:00:00')\n",
+    "# Jeff     Timedelta('472 days 00:00:00')\n",
+    "# Elon     Timedelta('143 days 00:00:00')\n",
+    "# Marissa  Timedelta('0 days 00:00:00')\n",
+    "\n",
+    "# Exhibit D - Add to and re-rank the table built in Exhibit A according to time_delta\n",
+    "#   boxers              feels   last ate     name  addresses          time_delta\n",
+    "# 0   True          Elon envy 2015-12-08    Larry          3  1429 days 00:00:00\n",
+    "# 1   True         charitable 2015-12-09     Bill          1   945 days 00:00:00\n",
+    "# 2  False  like the number 7 2015-12-08     Jeff          1   472 days 00:00:00\n",
+    "# 3   True         Alcoa envy 2015-12-01     Elon          2   143 days 00:00:00\n",
+    "# 4   True              sassy 2015-12-09  Marissa        NaN     0 days 00:00:00"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 2",
+   "language": "python",
+   "name": "python2"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2",
+   "version": "2.7.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 0
+}
